@@ -33,4 +33,4 @@ https://kamome-829.github.io/03_24_Robotto-Create/.
 
 ## 変更点
 
-- var3  All Clear がステータスのクリアに反映されていなかったところを修正した
+- var3.1  All Clear がステータスのクリアに反映されていなかったところを修正した
