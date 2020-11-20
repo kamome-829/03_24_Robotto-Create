@@ -34,6 +34,11 @@
                 <div class="title_text">
                     <span class="type" id="typewriter"></span>
                 </div>
+                <div class="battle_buttun">
+                    <a href="battle.html" class="ch_buttun_b">かんたん</a>
+                    <a href="battle.html" class="ch_buttun_b">ふつう</a>
+                    <a href="battle.html" class="ch_buttun_b">むずかしい</a>
+                </div>
                 <div class="button">
                     <a href="index.html" class="new_button">タイトルへ</a>
                 </div>
@@ -150,24 +155,50 @@
     </main>
 
     <footer>
-        <h1>レイアウトビュー</h1>
-        <div>
-            <p class="view_title">~ My Robotto ~</p>
-        </div>
-        <div class="view_name">
-            <p class="ch_now_text">" "</p>
-        </div>
-        <div class="footer_main">
-            <div class="footer_view">
-                <img src="img/noimage.png" class="appearance_img" id="view_img">
+        <div class="footer_now">
+            <h1>プレビュー</h1>
+            <div>
+                <p class="view_title">~ My Robotto ~</p>
             </div>
-            <div class="footer_guraf">
-                <canvas id="chart_view" class="chart_view"></canvas>
+            <div class="view_name">
+                <p class="ch_now_text">" "</p>
             </div>
+            <div class="footer_main">
+                <div class="footer_view">
+                    <img src="img/noimage.png" class="appearance_img" id="view_img">
+                </div>
+                <div class="footer_guraf">
+                    <canvas id="chart_view" class="chart_view"></canvas>
+                </div>
+            </div>
+            <div class="hidden_view">
+                <h2>特殊ステータス</h1>
+                    <p id="hidden_text" class="hidden_text">" "</p>
+            </div>
+
         </div>
-        <div class="hidden_view">
-            <h2>特殊ステータス</h1>
-                <p id="hidden_text" class="hidden_text">" "</p>
+        <div class="footer_down">
+            <div class="robo_save">
+
+            </div>
+            <div class="robo_save">
+
+            </div>
+            <div class="robo_save">
+
+            </div>
+            <div class="robo_save">
+
+            </div>
+            <div class="robo_save">
+
+            </div>
+            <div class="robo_save">
+
+            </div>
+            <div class="robo_save">
+
+            </div>
         </div>
     </footer>
 
@@ -363,13 +394,9 @@
             let save = new SAVE();
             //1.Save クリックイベント
             save.name_save();
-
             save.appearance_save();
-
             save.status_save();
-
             save.reset();
-
         });
     </script>
 </body>

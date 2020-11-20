@@ -17,10 +17,29 @@ var hidden_sts = ["力補正 + 5pt", "防御補正 + 5pt", "体力補正 + 5pt",
     "hp吸収", "火事場の馬鹿力", "クリティカルダメージ + 5pt", "クリティカルダメージ + 10pt", "打たれ弱い"]
 
 
+//合計spの値
+let total_sp = 100;
+
+//各ステータスの値
+let hp = 20;
+let str = 20;
+let def = 20;
+let spd = 20;
+let crl = 20;
+
+let variation_hp = 0;
+let variation_str = 0;
+let variation_def = 0;
+let variation_spd = 0;
+let variation_crl = 0;
+
+
+
 //ここからは保存に関するクラスを書いていく。
 
 class SAVE {
     constructor() {
+
     }
 
     //名前ページの設定
@@ -155,22 +174,8 @@ class SAVE {
     }
 
     //ステータスページの設定
+
     status_save() {
-        //合計spの値
-        let total_sp = 100;
-
-        //各ステータスの値
-        let hp = 20;
-        let str = 20;
-        let def = 20;
-        let spd = 20;
-        let crl = 20;
-
-        let variation_hp = 0;
-        let variation_str = 0;
-        let variation_def = 0;
-        let variation_spd = 0;
-        let variation_crl = 0;
 
         //各ステータスエリアのボタン判定変数
 
@@ -705,6 +710,92 @@ class SAVE {
 
             localStorage.removeItem('status_json');
             $('#hidden_text').text(" ");
+
+
+            var func = function () {
+                var mychart = new Chart($('#chart'), {
+                    type: 'radar',
+                    data: {
+                        labels: [
+                            '力',
+                            '防御',
+                            '体力',
+                            '素早さ',
+                            'クリティカル'
+                        ],
+                        datasets: [{
+                            label: 'ステータス',
+                            data: [
+                                str, def, hp, spd, crl
+                            ],
+                            backgroundColor: 'rgba(241, 107, 141, 0.5)',
+                            borderColor: 'rgba(0, 0, 0, 0.5)',
+                            borderWidth: 1,
+                            pointBackgroundColor: 'rgba(63,106,177,0.7)',
+                        }]
+                    },
+                    options: {
+                        scale: {
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 100,
+                                stepSize: 50,
+                            },
+                            angleLines: {        // 軸（放射軸）
+                                display: true,
+                                color: "brack"
+                            },
+                            gridLines: {         // 補助線（目盛の線）
+                                display: true,
+                                color: "lime"
+                            }
+                        }
+                    }
+                });
+            }
+
+            var func_view = function () {
+                var mychart_view = new Chart($('#chart_view'), {
+                    type: 'radar',
+                    data: {
+                        labels: [
+                            '力',
+                            '防御',
+                            '体力',
+                            '素早さ',
+                            'クリティカル'
+                        ],
+                        datasets: [{
+                            label: 'ステータス',
+                            data: [
+                                str, def, hp, spd, crl
+                            ],
+                            backgroundColor: 'rgba(241, 107, 141, 0.5)',
+                            borderColor: 'rgba(0, 0, 0, 0.5)',
+                            borderWidth: 1,
+                            pointBackgroundColor: 'rgba(63,106,177,0.7)',
+                        }]
+                    },
+                    options: {
+                        scale: {
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 100,
+                                stepSize: 50,
+                            },
+                            angleLines: {        // 軸（放射軸）
+                                display: true,
+                                color: "brack"
+                            },
+                            gridLines: {         // 補助線（目盛の線）
+                                display: true,
+                                color: "lime"
+                            }
+                        }
+                    }
+                });
+            }
+
 
             func_view();
             func();
