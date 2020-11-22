@@ -17,6 +17,9 @@ var hidden_sts = ["力補正 + 5pt", "防御補正 + 5pt", "体力補正 + 5pt",
     "hp吸収", "火事場の馬鹿力", "クリティカルダメージ + 5pt", "クリティカルダメージ + 10pt", "打たれ弱い"]
 
 
+var text_explanation = ["バトルスタート！！うまくコマンドを選択し、敵に勝利しよう"]
+
+
 //合計spの値
 let total_sp = 100;
 
@@ -34,7 +37,46 @@ let variation_spd = 0;
 let variation_crl = 0;
 
 
+//画像のページ数
+let now_page = 0;
 
+//画像の保存
+let serect_img = [255];
+
+
+//hpに関する記述
+const my_lifeBar = document.getElementById('my_life-bar');         // ライフバー
+const my_lifeMark = document.getElementById('my_life-mark');       // ライフの光部分
+let my_hp = 100;
+let my_life = 100;
+let my_str;
+let my_spd;
+let my_def;
+let my_crl;
+
+const enemy_lifeBar = document.getElementById('enemy_life-bar');         // ライフバー
+const enemy_lifeMark = document.getElementById('enemy_life-mark');       // ライフの光部分
+let enemy_life = 400;
+let enemy_hp = enemy_life;
+let enemy_str = 40;
+let enemy_spd = 0.2;
+let enemy_def = 0.2;
+let enemy_crl = 0.2;
+
+
+//技の回数
+let stro = 1;
+let hea = 3;
+let ite = 3;
+
+let teki = 0;
+
+$('#fu').on('click', function () {
+    teki = 1;
+});
+$('#mu').on('click', function () {
+    teki = 2;
+});
 //ここからは保存に関するクラスを書いていく。
 
 class SAVE {
@@ -82,8 +124,6 @@ class SAVE {
     //見た目ページの設定
     appearance_save() {
 
-        let serect_img = [255];
-
         //用意した画像を配列へ代入
 
         for (let i = 0; i < 17; i++) {
@@ -98,7 +138,6 @@ class SAVE {
             console.log(serect_img[i]);
         }
 
-        let now_page = 0;
 
         //左ボタンを押したら
         $('#appearance_left').on('click', function () {
@@ -801,4 +840,310 @@ class SAVE {
             func();
         });
     }
+
+    game_sturt() {
+        //名前
+        const text = localStorage.getItem('name');
+        $('.my_name').text(text);
+        if (text == " ") {
+            $('.my_name').text('" "');
+        }
+
+        //見た目
+        const get_json_appearance = localStorage.getItem('appearance_json');
+        var get_obj_appearance = JSON.parse(get_json_appearance);
+
+        now_page = get_obj_appearance.now_page;
+        serect_img[now_page] = get_obj_appearance.serect_img;
+
+        var add = document.getElementById('my_img_now');
+        add.setAttribute('src', serect_img[now_page]);
+
+        //ステータス
+        const get_json = localStorage.getItem('status_json');
+        var get_obj = JSON.parse(get_json);
+
+        let now = get_obj.hidden;
+
+        str = get_obj.str;
+        def = get_obj.def;
+        spd = get_obj.spd;
+        crl = get_obj.crl;
+
+        hp = get_obj.hp;
+        my_hp = hp * 10;
+
+        my_str = str;
+        my_def = def / 200;
+        my_spd = spd / 200;
+        my_crl = crl / 200;
+
+        my_lifeBar.style.width = "100%";
+        enemy_lifeBar.style.width = "100%";
+
+        $('.text_explanation').text(text_explanation[0]);
+
+        if (teki == 1) {
+            enemy_hp = 600;
+            enemy_str = 50;
+            enemy_spd = 0.3;
+            enemy_def = 0.2;
+            enemy_crl = 0.3;
+            $('.enemy_name').text("ラミア");
+
+        }
+        if (teki == 2) {
+            enemy_hp = 700;
+            enemy_str = 70;
+            enemy_spd = 0.2;
+            enemy_def = 0.4;
+            enemy_crl = 0.2;
+            $('.enemy_name').text("ドラゴン");
+
+        }
+
+    }
+
+
+
+    choose() {
+        $("#attack").click(function () {
+            //先攻、後攻判断
+            if (my_spd < enemy_spd) {
+                console.log("1");
+
+                $('.text_explanation').text("敵の攻撃！！");
+
+                wait(2).done(function () {
+                    enemy_attack(enemy_str, enemy_crl, my_def, my_spd, my_hp);
+                });
+                wait(4).done(function () {
+                    $(".text_explanation").text("自分の攻撃！！");
+                });
+                wait(6).done(function () {
+                    my_attack(my_str, my_crl, enemy_def, enemy_spd, enemy_hp);
+                });
+
+                wait(8).done(function () {
+                    $('.text_explanation').text(text_explanation[0]);
+                });
+
+            } else {
+                console.log("2");
+
+                $(".text_explanation").text("自分の攻撃！！");
+
+                wait(2).done(function () {
+
+                    my_attack(my_str, my_crl, enemy_def, enemy_spd, enemy_hp);
+                });
+                wait(4).done(function () {
+
+                    $('.text_explanation').text("敵の攻撃！！");
+                });
+                wait(6).done(function () {
+                    enemy_attack(enemy_str, enemy_crl, my_def, my_spd, my_hp);
+                });
+
+                wait(8).done(function () {
+                    $('.text_explanation').text(text_explanation[0]);
+                });
+
+            }
+        });
+
+        $("#counter").click(function () {
+            if (my_spd < enemy_spd) {
+                $('.text_explanation').text("敵はためるを使った！");
+
+                wait(2).done(function () {
+                    enemy_counter();
+                });
+                wait(4).done(function () {
+                    $(".text_explanation").text("自分はためるを使った！");
+                });
+                wait(6).done(function () {
+                    my_counter();
+                });
+
+                wait(8).done(function () {
+                    $('.text_explanation').text(text_explanation[0]);
+                });
+
+            } else {
+                $(".text_explanation").text("自分の回復！！");
+
+                wait(2).done(function () {
+
+                    my_heal();
+                });
+                wait(4).done(function () {
+
+                    $('.text_explanation').text("敵の回復！！");
+                });
+                wait(6).done(function () {
+                    enemy_heal();
+                });
+
+                wait(8).done(function () {
+                    $('.text_explanation').text(text_explanation[0]);
+                });
+
+            }
+        });
+
+        $("#item").click(function () {
+            if (ite > 0) {
+                if (my_spd < enemy_spd) {
+                    $('.text_explanation').text("敵のアイテム攻撃！！");
+
+                    wait(2).done(function () {
+                        enemy_item();
+                    });
+                    wait(4).done(function () {
+                        $(".text_explanation").text("自分のアイテム攻撃！！");
+                    });
+                    wait(6).done(function () {
+                        my_item();
+                    });
+
+                    wait(8).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                    });
+
+                } else {
+                    $(".text_explanation").text("自分のアイテム攻撃！！");
+
+                    wait(2).done(function () {
+
+                        my_item();
+                    });
+                    wait(4).done(function () {
+
+                        $('.text_explanation').text("敵のアイテム攻撃！！");
+                    });
+                    wait(6).done(function () {
+                        enemy_item();
+                    });
+
+                    wait(8).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                    });
+
+                }
+                ite--;
+            }
+            $('#choose_item').text("アイテム　　　残り" + ite + "回");
+
+
+        });
+
+        $("#heal").click(function () {
+            if (hea > 0) {
+                if (my_spd < enemy_spd) {
+                    $('.text_explanation').text("敵の回復！！");
+
+                    wait(2).done(function () {
+                        enemy_heal();
+                    });
+                    wait(4).done(function () {
+                        $(".text_explanation").text("自分の回復！！");
+                    });
+                    wait(6).done(function () {
+                        my_heal();
+                    });
+
+                    wait(8).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                    });
+
+                } else {
+                    $(".text_explanation").text("自分の回復！！");
+
+                    wait(2).done(function () {
+
+                        my_heal();
+                    });
+                    wait(4).done(function () {
+
+                        $('.text_explanation').text("敵の回復！！");
+                    });
+                    wait(6).done(function () {
+                        enemy_heal();
+                    });
+
+                    wait(8).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                    });
+
+                }
+                hea--;
+            }
+            $('#choose_heal').text("回復　　　残り" + hea + "回");
+
+        });
+
+        $("#strong").click(function () {
+            if (stro > 0) {
+                if (my_spd < enemy_spd) {
+                    $('.text_explanation').text("敵の必殺技！！");
+
+                    wait(2).done(function () {
+                        enemy_strong(enemy_str, enemy_crl, my_def, my_spd, my_hp);
+                    });
+                    wait(4).done(function () {
+                        $(".text_explanation").text("自分の必殺技！！");
+                    });
+                    wait(6).done(function () {
+                        my_strong(my_str, my_crl, enemy_def, enemy_spd, enemy_hp);
+                    });
+
+                    wait(8).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                    });
+
+                } else {
+                    $(".text_explanation").text("自分の必殺技！！");
+
+                    wait(2).done(function () {
+
+                        my_strong(my_str, my_crl, enemy_def, enemy_spd, enemy_hp);
+                    });
+                    wait(4).done(function () {
+
+                        $('.text_explanation').text("敵の必殺技！！");
+                    });
+                    wait(6).done(function () {
+                        enemy_strong(enemy_str, enemy_crl, my_def, my_spd, my_hp);
+                    });
+
+                    wait(8).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                    });
+
+                }
+                stro--;
+            }
+
+            $('#choose_strong').text("必殺技　　　残り" + stro + "回");
+
+            console.log(stro);
+        });
+    }
 }
+
+function wait(sec) {
+
+    // jQueryのDeferredを作成します。
+    var objDef = new $.Deferred;
+
+    setTimeout(function () {
+
+        // sec秒後に、resolve()を実行して、Promiseを完了します。
+        objDef.resolve(sec);
+
+    }, sec * 1000);
+
+    return objDef.promise();
+
+};
