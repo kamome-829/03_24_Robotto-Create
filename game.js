@@ -101,6 +101,7 @@ function my_attack(mya, myc, emd, ems, emh) {
 }
 
 
+
 function my_counter() {
     my_str += 5;
     my_def += 5 / 200;
