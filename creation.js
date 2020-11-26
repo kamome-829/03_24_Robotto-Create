@@ -13,11 +13,15 @@ var name_deta = ["かもめ", "ジェリー", "レイオス", "キューロ", "�
 
 var hidden_sts = ["力補正 + 5pt", "防御補正 + 5pt", "体力補正 + 5pt", "素早さ補正 + 5pt", "クリティカル補正 + 5pt",
     "力補正 + 10pt", "防御補正 + 10pt", "体力補正 + 10pt", "素早さ補正 + 10pt", "クリティカル補正 + 10pt",
-    "hp常時回復", "根性", "5秒無敵", "10秒無敵", "2回攻撃",
+    "hp常時回復", "根性", "1回無敵", "2回無敵", "1回追撃",
     "hp吸収", "火事場の馬鹿力", "クリティカルダメージ + 5pt", "クリティカルダメージ + 10pt", "打たれ弱い"]
 
 
-var text_explanation = ["バトルスタート！！うまくコマンドを選択し、敵に勝利しよう"]
+var enemy_text_deta = ["敵は攻撃をした！！", "敵はためるを使った！", "敵はアイテム使用し攻撃した！！",
+    "敵は回復をした！！", "敵は必殺技を発動した！！"];
+
+var text_explanation = ["バトルスタート！！うまくコマンドを選択し、敵に勝利しよう", "特殊能力発動！常時hp回復！！hpを少し回復した",
+    "敵のhpを吸収！"]
 
 
 //合計spの値
@@ -56,7 +60,7 @@ let my_crl;
 
 const enemy_lifeBar = document.getElementById('enemy_life-bar');         // ライフバー
 const enemy_lifeMark = document.getElementById('enemy_life-mark');       // ライフの光部分
-let enemy_life = 400;
+let enemy_life = 100;
 let enemy_hp = enemy_life;
 let enemy_str = 40;
 let enemy_spd = 0.2;
@@ -69,19 +73,190 @@ let stro = 1;
 let hea = 3;
 let ite = 3;
 
+//敵の種類
 let teki = 0;
+let go_teki = 0;
+let go_hid;
 
+//敵の択
+var enemy_serect = 5;
+
+
+//初めからボタン
+$('#new_game_0').on('click', function () {
+    const new_create = 0;
+    localStorage.setItem('new_create', new_create);
+    console.log(new_create);
+});
+
+/*
+$('#new_game_1').on('click', function () {
+    const new_create = 1;
+    localStorage.setItem('new_create', new_create);
+    console.log(new_create);
+});
+*/
+//難易度選択ボタン
+$('#ka').on('click', function () {
+    const teki = 0;
+    localStorage.setItem('teki', teki);
+    console.log(teki);
+});
 $('#fu').on('click', function () {
-    teki = 1;
+    const teki = 1;
+    localStorage.setItem('teki', teki);
+    console.log(teki);
 });
 $('#mu').on('click', function () {
-    teki = 2;
+    const teki = 2;
+    localStorage.setItem('teki', teki);
+    console.log(teki);
 });
-//ここからは保存に関するクラスを書いていく。
 
-class SAVE {
+
+function func() {
+    var mychart = new Chart($('#chart'), {
+        type: 'radar',
+        data: {
+            labels: [
+                '力',
+                '防御',
+                '体力',
+                '素早さ',
+                'クリティカル'
+            ],
+            datasets: [{
+                label: 'ステータス',
+                data: [
+                    str, def, hp, spd, crl
+                ],
+                backgroundColor: 'rgba(241, 107, 141, 0.5)',
+                borderColor: 'rgba(0, 0, 0, 0.5)',
+                borderWidth: 1,
+                pointBackgroundColor: 'rgba(63,106,177,0.7)',
+            }]
+        },
+        options: {
+            scale: {
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    stepSize: 50,
+                },
+                angleLines: {        // 軸（放射軸）
+                    display: true,
+                    color: "brack"
+                },
+                gridLines: {         // 補助線（目盛の線）
+                    display: true,
+                    color: "lime"
+                }
+            }
+        }
+    });
+}
+
+function func_view() {
+    var mychart_view = new Chart($('#chart_view'), {
+        type: 'radar',
+        data: {
+            labels: [
+                '力',
+                '防御',
+                '体力',
+                '素早さ',
+                'クリティカル'
+            ],
+            datasets: [{
+                label: 'ステータス',
+                data: [
+                    str, def, hp, spd, crl
+                ],
+                backgroundColor: 'rgba(241, 107, 141, 0.5)',
+                borderColor: 'rgba(0, 0, 0, 0.5)',
+                borderWidth: 1,
+                pointBackgroundColor: 'rgba(63,106,177,0.7)',
+            }]
+        },
+        options: {
+            scale: {
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    stepSize: 50,
+                },
+                angleLines: {        // 軸（放射軸）
+                    display: true,
+                    color: "brack"
+                },
+                gridLines: {         // 補助線（目盛の線）
+                    display: true,
+                    color: "lime"
+                }
+            }
+        }
+    });
+}
+
+
+function resett() {
+    localStorage.removeItem('name');
+    $('#text_area').val(" ");
+    $('.ch_now_text').text('" "');
+
+    $('.set_img').text('" "');
+    localStorage.removeItem('appearance_json');
+
+    var view = document.getElementById('view_img');
+    view.setAttribute('src', "img/noimage.png");
+
+    total_sp = 100;
+
+    hp = 20;
+    str = 20;
+    def = 20;
+    spd = 20;
+    crl = 20;
+
+    console.log(hp);
+
+    variation_hp = 0;
+    variation_str = 0;
+    variation_def = 0;
+    variation_spd = 0;
+    variation_crl = 0;
+
+    $('#total_str').text("total " + str + "pt");
+    $('#variation_str').text("+ " + variation_str + "pt");
+    $('#total_def').text("total " + def + "pt");
+    $('#variation_def').text("+ " + variation_def + "pt");
+    $('#total_hp').text("total " + hp + "pt");
+    $('#variation_hp').text("+ " + variation_hp + "pt");
+    $('#total_spd').text("total " + spd + "pt");
+    $('#variation_spd').text("+ " + variation_spd + "pt");
+    $('#total_crl').text("total " + crl + "pt");
+    $('#variation_crl').text("+ " + variation_crl + "pt");
+    $('#ch_status_total').text("残りSP・・・ " + total_sp + "pt");
+
+    localStorage.removeItem('status_json');
+    $('#hidden_text').text(" ");
+
+    func_view();
+    func();
+}
+
+
+//ここからは作成画面についてのクラス
+class CREATE {
     constructor() {
 
+    }
+
+    create_stert() {
+        if (localStorage.getItem('new_create')) {
+            resett();
+            localStorage.removeItem('new_create');
+        }
     }
 
     //名前ページの設定
@@ -227,90 +402,6 @@ class SAVE {
         let clicked_pa = [clicked_str, clicked_def, clicked_spd, clicked_hp, clicked_crl];
 
         const statuss = ["str", "def", "hp", "spd", "crl"];
-
-        var func = function () {
-            var mychart = new Chart($('#chart'), {
-                type: 'radar',
-                data: {
-                    labels: [
-                        '力',
-                        '防御',
-                        '体力',
-                        '素早さ',
-                        'クリティカル'
-                    ],
-                    datasets: [{
-                        label: 'ステータス',
-                        data: [
-                            str, def, hp, spd, crl
-                        ],
-                        backgroundColor: 'rgba(241, 107, 141, 0.5)',
-                        borderColor: 'rgba(0, 0, 0, 0.5)',
-                        borderWidth: 1,
-                        pointBackgroundColor: 'rgba(63,106,177,0.7)',
-                    }]
-                },
-                options: {
-                    scale: {
-                        ticks: {
-                            suggestedMin: 0,
-                            suggestedMax: 100,
-                            stepSize: 50,
-                        },
-                        angleLines: {        // 軸（放射軸）
-                            display: true,
-                            color: "brack"
-                        },
-                        gridLines: {         // 補助線（目盛の線）
-                            display: true,
-                            color: "lime"
-                        }
-                    }
-                }
-            });
-        }
-
-        var func_view = function () {
-            var mychart_view = new Chart($('#chart_view'), {
-                type: 'radar',
-                data: {
-                    labels: [
-                        '力',
-                        '防御',
-                        '体力',
-                        '素早さ',
-                        'クリティカル'
-                    ],
-                    datasets: [{
-                        label: 'ステータス',
-                        data: [
-                            str, def, hp, spd, crl
-                        ],
-                        backgroundColor: 'rgba(241, 107, 141, 0.5)',
-                        borderColor: 'rgba(0, 0, 0, 0.5)',
-                        borderWidth: 1,
-                        pointBackgroundColor: 'rgba(63,106,177,0.7)',
-                    }]
-                },
-                options: {
-                    scale: {
-                        ticks: {
-                            suggestedMin: 0,
-                            suggestedMax: 100,
-                            stepSize: 50,
-                        },
-                        angleLines: {        // 軸（放射軸）
-                            display: true,
-                            color: "brack"
-                        },
-                        gridLines: {         // 補助線（目盛の線）
-                            display: true,
-                            color: "lime"
-                        }
-                    }
-                }
-            });
-        }
 
         func_view();
         func();
@@ -610,7 +701,8 @@ class SAVE {
         //セーブボタン選択
         $("#save_status").click(function () {
 
-            var hidden_ram = hidden_sts[Math.floor(Math.random() * hidden_sts.length)];
+            var numb = Math.floor(Math.random() * hidden_sts.length);
+            var hidden_ram = hidden_sts[numb];
             var now_hidden = hidden_ram;
 
             var status_obj = {
@@ -625,7 +717,8 @@ class SAVE {
                 "variation_spd": variation_spd,
                 "variation_crl": variation_crl,
                 "total_sp": total_sp,
-                "hidden": now_hidden
+                "hidden": now_hidden,
+                "hidden_num": numb
             }
 
             var status_json = JSON.stringify(status_obj);
@@ -710,134 +803,7 @@ class SAVE {
 
     reset() {
         $("#new_game").click(function () {
-
-            localStorage.removeItem('name');
-            $('#text_area').val(" ");
-            $('.ch_now_text').text('" "');
-
-            $('.set_img').text('" "');
-            localStorage.removeItem('appearance_json');
-
-            var view = document.getElementById('view_img');
-            view.setAttribute('src', "img/noimage.png");
-
-            total_sp = 100;
-
-            hp = 20;
-            str = 20;
-            def = 20;
-            spd = 20;
-            crl = 20;
-
-            variation_hp = 0;
-            variation_str = 0;
-            variation_def = 0;
-            variation_spd = 0;
-            variation_crl = 0;
-
-            $('#total_str').text("total " + str + "pt");
-            $('#variation_str').text("+ " + variation_str + "pt");
-            $('#total_def').text("total " + def + "pt");
-            $('#variation_def').text("+ " + variation_def + "pt");
-            $('#total_hp').text("total " + hp + "pt");
-            $('#variation_hp').text("+ " + variation_hp + "pt");
-            $('#total_spd').text("total " + spd + "pt");
-            $('#variation_spd').text("+ " + variation_spd + "pt");
-            $('#total_crl').text("total " + crl + "pt");
-            $('#variation_crl').text("+ " + variation_crl + "pt");
-            $('#ch_status_total').text("残りSP・・・ " + total_sp + "pt");
-
-            localStorage.removeItem('status_json');
-            $('#hidden_text').text(" ");
-
-
-            var func = function () {
-                var mychart = new Chart($('#chart'), {
-                    type: 'radar',
-                    data: {
-                        labels: [
-                            '力',
-                            '防御',
-                            '体力',
-                            '素早さ',
-                            'クリティカル'
-                        ],
-                        datasets: [{
-                            label: 'ステータス',
-                            data: [
-                                str, def, hp, spd, crl
-                            ],
-                            backgroundColor: 'rgba(241, 107, 141, 0.5)',
-                            borderColor: 'rgba(0, 0, 0, 0.5)',
-                            borderWidth: 1,
-                            pointBackgroundColor: 'rgba(63,106,177,0.7)',
-                        }]
-                    },
-                    options: {
-                        scale: {
-                            ticks: {
-                                suggestedMin: 0,
-                                suggestedMax: 100,
-                                stepSize: 50,
-                            },
-                            angleLines: {        // 軸（放射軸）
-                                display: true,
-                                color: "brack"
-                            },
-                            gridLines: {         // 補助線（目盛の線）
-                                display: true,
-                                color: "lime"
-                            }
-                        }
-                    }
-                });
-            }
-
-            var func_view = function () {
-                var mychart_view = new Chart($('#chart_view'), {
-                    type: 'radar',
-                    data: {
-                        labels: [
-                            '力',
-                            '防御',
-                            '体力',
-                            '素早さ',
-                            'クリティカル'
-                        ],
-                        datasets: [{
-                            label: 'ステータス',
-                            data: [
-                                str, def, hp, spd, crl
-                            ],
-                            backgroundColor: 'rgba(241, 107, 141, 0.5)',
-                            borderColor: 'rgba(0, 0, 0, 0.5)',
-                            borderWidth: 1,
-                            pointBackgroundColor: 'rgba(63,106,177,0.7)',
-                        }]
-                    },
-                    options: {
-                        scale: {
-                            ticks: {
-                                suggestedMin: 0,
-                                suggestedMax: 100,
-                                stepSize: 50,
-                            },
-                            angleLines: {        // 軸（放射軸）
-                                display: true,
-                                color: "brack"
-                            },
-                            gridLines: {         // 補助線（目盛の線）
-                                display: true,
-                                color: "lime"
-                            }
-                        }
-                    }
-                });
-            }
-
-
-            func_view();
-            func();
+            resett();
         });
     }
 
@@ -863,16 +829,59 @@ class SAVE {
         const get_json = localStorage.getItem('status_json');
         var get_obj = JSON.parse(get_json);
 
-        let now = get_obj.hidden;
+        let now_hid = get_obj.hidden;
+        let num_hid = get_obj.hidden_num;
+        go_hid = num_hid;
 
         str = get_obj.str;
         def = get_obj.def;
         spd = get_obj.spd;
         crl = get_obj.crl;
-
         hp = get_obj.hp;
-        my_hp = hp * 10;
 
+        if (num_hid == 0) {
+            str += 5;
+        } else if (num_hid == 1) {
+            def += 5;
+        } else if (num_hid == 2) {
+            hp += 5;
+        } else if (num_hid == 3) {
+            spd += 5;
+        } else if (num_hid == 4) {
+            crl += 5;
+        } else if (num_hid == 5) {
+            str += 10;
+        } else if (num_hid == 6) {
+            def += 10;
+        } else if (num_hid == 7) {
+            hp += 10;
+        } else if (num_hid == 8) {
+            spd += 10;
+        } else if (num_hid == 9) {
+            crl += 10;
+        }
+        if (go_hid == 11) {
+            konjyou = 1;
+        }
+        if (go_hid == 12) {
+            muteki = 1;
+        }
+        if (go_hid == 13) {
+            muteki = 2;
+        }
+        if (go_hid == 14) {
+            tuigeki = 1;
+            tuigeki_text = 1;
+        }
+        if (go_hid == 17) {
+            crl_puras = 5;
+        }
+        if (go_hid == 18) {
+            crl_puras = 10;
+        }
+
+
+        my_hp = hp / 200;
         my_str = str;
         my_def = def / 200;
         my_spd = spd / 200;
@@ -882,40 +891,59 @@ class SAVE {
         enemy_lifeBar.style.width = "100%";
 
         $('.text_explanation').text(text_explanation[0]);
+        const teki = localStorage.getItem('teki');
+
+        if (teki == 0) {
+            enemy_hp = 0.2;
+            enemy_str = 40;
+            enemy_spd = 0.2;
+            enemy_def = 0.2;
+            enemy_crl = 0.2;
+            $('.enemy_name').text("ゴースト");
+            const enemy_img_0 = document.getElementById('enemy_img_now');
+            enemy_img_0.setAttribute('src', "img/敵_1.png");
+            go_teki = 0
+        }
 
         if (teki == 1) {
-            enemy_hp = 600;
-            enemy_str = 50;
+            enemy_hp = 0.3;
+            enemy_str = 45;
             enemy_spd = 0.3;
-            enemy_def = 0.2;
+            enemy_def = 0.3;
             enemy_crl = 0.3;
             $('.enemy_name').text("ラミア");
-
+            const enemy_img_1 = document.getElementById('enemy_img_now');
+            enemy_img_1.setAttribute('src', "img/敵_2.png");
+            go_teki = 1;
         }
+
         if (teki == 2) {
-            enemy_hp = 700;
-            enemy_str = 70;
-            enemy_spd = 0.2;
-            enemy_def = 0.4;
-            enemy_crl = 0.2;
+            enemy_hp = 0.3;
+            enemy_str = 50;
+            enemy_spd = 0.4;
+            enemy_def = 0.3;
+            enemy_crl = 0.5;
             $('.enemy_name').text("ドラゴン");
-
+            console.log("ss");
+            const enemy_img_2 = document.getElementById('enemy_img_now');
+            enemy_img_2.setAttribute('src', "img/敵_3.png");
+            go_teki = 2;
         }
-
+        console.log(tuigeki_text);
+        console.log(tuigeki);
     }
-
-
 
     choose() {
         $("#attack").click(function () {
             //先攻、後攻判断
+            taku_none();
             if (my_spd < enemy_spd) {
-                console.log("1");
 
-                $('.text_explanation').text("敵の攻撃！！");
+                enemy_serect = enemy_text();
 
                 wait(2).done(function () {
-                    enemy_attack(enemy_str, enemy_crl, my_def, my_spd, my_hp);
+                    enemy_turn(enemy_serect);
+
                 });
                 wait(4).done(function () {
                     $(".text_explanation").text("自分の攻撃！！");
@@ -925,8 +953,37 @@ class SAVE {
                 });
 
                 wait(8).done(function () {
+
                     $('.text_explanation').text(text_explanation[0]);
+                    taku_block();
+                    if (go_hid == 10) {
+                        $('.text_explanation').text(text_explanation[1]);
+                        taku_none();
+                        my_alterLife(5);
+                    }
+                    if (go_hid == 15) {
+                        $('.text_explanation').text(text_explanation[2]);
+                        taku_none();
+                        my_alterLife(inhp);
+                    }
+                    if (tuigeki == 1) {
+                        taku_none();
+                        my_attack(my_str, my_crl, enemy_def, enemy_spd, enemy_hp);
+                    }
                 });
+                if (go_hid == 10 || go_hid == 15) {
+                    wait(10).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                    });
+                }
+                if (tuigeki == 1) {
+                    wait(10).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                        tuigeki = 0;
+                    });
+                }
 
             } else {
                 console.log("2");
@@ -936,28 +993,68 @@ class SAVE {
                 wait(2).done(function () {
 
                     my_attack(my_str, my_crl, enemy_def, enemy_spd, enemy_hp);
+
                 });
                 wait(4).done(function () {
-
-                    $('.text_explanation').text("敵の攻撃！！");
+                    if (tuigeki == 1) {
+                        my_attack(my_str, my_crl, enemy_def, enemy_spd, enemy_hp);
+                    } else {
+                        enemy_serect = enemy_text();
+                    }
+                    if (go_hid == 15) {
+                        $('.text_explanation').text(text_explanation[2]);
+                        my_alterLife(inhp);
+                    } else {
+                        enemy_serect = enemy_text();
+                    }
                 });
                 wait(6).done(function () {
-                    enemy_attack(enemy_str, enemy_crl, my_def, my_spd, my_hp);
+                    if (tuigeki == 1 || go_hid == 15) {
+                        enemy_serect = enemy_text();
+                    } else {
+                        enemy_turn(enemy_serect);
+                    }
                 });
 
                 wait(8).done(function () {
-                    $('.text_explanation').text(text_explanation[0]);
+                    if (tuigeki == 1 || go_hid == 15) {
+                        enemy_turn(enemy_serect);
+                    } else {
+                        $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                        if (go_hid == 10) {
+                            $('.text_explanation').text(text_explanation[1]);
+                            taku_none()
+                            my_alterLife(5);
+                        }
+                    }
                 });
 
+                if (go_hid == 10 || go_hid == 15) {
+                    wait(10).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                    });
+                }
+
+                if (tuigeki == 1) {
+                    wait(10).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                        tuigeki = 0;
+                    });
+                }
             }
         });
 
         $("#counter").click(function () {
+            taku_none();
             if (my_spd < enemy_spd) {
-                $('.text_explanation').text("敵はためるを使った！");
+
+                enemy_serect = enemy_text();
 
                 wait(2).done(function () {
-                    enemy_counter();
+                    enemy_turn(enemy_serect);
                 });
                 wait(4).done(function () {
                     $(".text_explanation").text("自分はためるを使った！");
@@ -968,37 +1065,64 @@ class SAVE {
 
                 wait(8).done(function () {
                     $('.text_explanation').text(text_explanation[0]);
+                    taku_block();
+                    if (go_hid == 10) {
+                        $('.text_explanation').text(text_explanation[1]);
+                        taku_none()
+                        my_alterLife(5);
+                    }
                 });
+                if (go_hid == 10) {
+                    wait(10).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                    });
+                }
 
             } else {
-                $(".text_explanation").text("自分の回復！！");
+                $(".text_explanation").text("自分はためるを使った！");
 
                 wait(2).done(function () {
 
-                    my_heal();
+                    my_counter();
                 });
                 wait(4).done(function () {
 
-                    $('.text_explanation').text("敵の回復！！");
+                    enemy_serect = enemy_text();
+
                 });
                 wait(6).done(function () {
-                    enemy_heal();
+                    enemy_turn(enemy_serect);
                 });
 
                 wait(8).done(function () {
                     $('.text_explanation').text(text_explanation[0]);
+                    taku_block();
+                    if (go_hid == 10) {
+                        $('.text_explanation').text(text_explanation[1]);
+                        taku_none()
+                        my_alterLife(5);
+                    }
                 });
+                if (go_hid == 10) {
+                    wait(10).done(function () {
+                        $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                    });
+                }
 
+                console.log(my_str);
             }
         });
 
         $("#item").click(function () {
+            taku_none();
             if (ite > 0) {
                 if (my_spd < enemy_spd) {
-                    $('.text_explanation').text("敵のアイテム攻撃！！");
+                    enemy_serect = enemy_text();
 
                     wait(2).done(function () {
-                        enemy_item();
+                        enemy_turn(enemy_serect);
                     });
                     wait(4).done(function () {
                         $(".text_explanation").text("自分のアイテム攻撃！！");
@@ -1009,7 +1133,19 @@ class SAVE {
 
                     wait(8).done(function () {
                         $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                        if (go_hid == 10) {
+                            $('.text_explanation').text(text_explanation[1]);
+                            taku_none()
+                            my_alterLife(5);
+                        }
                     });
+                    if (go_hid == 10) {
+                        wait(10).done(function () {
+                            $('.text_explanation').text(text_explanation[0]);
+                            taku_block();
+                        });
+                    }
 
                 } else {
                     $(".text_explanation").text("自分のアイテム攻撃！！");
@@ -1020,31 +1156,48 @@ class SAVE {
                     });
                     wait(4).done(function () {
 
-                        $('.text_explanation').text("敵のアイテム攻撃！！");
+                        enemy_serect = enemy_text();
+
                     });
                     wait(6).done(function () {
-                        enemy_item();
+                        enemy_turn(enemy_serect);
                     });
 
                     wait(8).done(function () {
                         $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                        if (go_hid == 10) {
+                            $('.text_explanation').text(text_explanation[1]);
+                            taku_none()
+                            my_alterLife(5);
+                        }
                     });
+                    if (go_hid == 10) {
+                        wait(10).done(function () {
+                            $('.text_explanation').text(text_explanation[0]);
+                            taku_block();
+                        });
+                    }
 
                 }
                 ite--;
             }
             $('#choose_item').text("アイテム　　　残り" + ite + "回");
-
+            if (ite == 0) {
+                $('#item').css('opacity', '0.2');
+                $('#item').addClass('none');
+            }
 
         });
 
         $("#heal").click(function () {
+            taku_none();
             if (hea > 0) {
                 if (my_spd < enemy_spd) {
-                    $('.text_explanation').text("敵の回復！！");
+                    enemy_serect = enemy_text();
 
                     wait(2).done(function () {
-                        enemy_heal();
+                        enemy_turn(enemy_serect);
                     });
                     wait(4).done(function () {
                         $(".text_explanation").text("自分の回復！！");
@@ -1055,7 +1208,19 @@ class SAVE {
 
                     wait(8).done(function () {
                         $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                        if (go_hid == 10) {
+                            $('.text_explanation').text(text_explanation[1]);
+                            taku_none()
+                            my_alterLife(5);
+                        }
                     });
+                    if (go_hid == 10) {
+                        wait(10).done(function () {
+                            $('.text_explanation').text(text_explanation[0]);
+                            taku_block();
+                        });
+                    }
 
                 } else {
                     $(".text_explanation").text("自分の回復！！");
@@ -1066,30 +1231,46 @@ class SAVE {
                     });
                     wait(4).done(function () {
 
-                        $('.text_explanation').text("敵の回復！！");
+                        enemy_serect = enemy_text();
                     });
                     wait(6).done(function () {
-                        enemy_heal();
+                        enemy_turn(enemy_serect);
                     });
 
                     wait(8).done(function () {
                         $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                        if (go_hid == 10) {
+                            $('.text_explanation').text(text_explanation[1]);
+                            taku_none()
+                            my_alterLife(5);
+                        }
                     });
+                    if (go_hid == 10) {
+                        wait(10).done(function () {
+                            $('.text_explanation').text(text_explanation[0]);
+                            taku_block();
+                        });
+                    }
 
                 }
                 hea--;
             }
             $('#choose_heal').text("回復　　　残り" + hea + "回");
-
+            if (hea == 0) {
+                $('#heal').css('opacity', '0.2');
+                $('#heal').addClass('none');
+            }
         });
 
         $("#strong").click(function () {
+            taku_none();
             if (stro > 0) {
                 if (my_spd < enemy_spd) {
-                    $('.text_explanation').text("敵の必殺技！！");
+                    enemy_serect = enemy_text();
 
                     wait(2).done(function () {
-                        enemy_strong(enemy_str, enemy_crl, my_def, my_spd, my_hp);
+                        enemy_turn(enemy_serect);
                     });
                     wait(4).done(function () {
                         $(".text_explanation").text("自分の必殺技！！");
@@ -1100,7 +1281,24 @@ class SAVE {
 
                     wait(8).done(function () {
                         $('.text_explanation').text(text_explanation[0]);
+                        taku_block();
+                        if (go_hid == 10) {
+                            $('.text_explanation').text(text_explanation[1]);
+                            taku_none()
+                            my_alterLife(5);
+                        }
+                        if (go_hid == 15) {
+                            $('.text_explanation').text(text_explanation[2]);
+                            taku_none();
+                            my_alterLife(inhp);
+                        }
                     });
+                    if (go_hid == 10 || go_hid == 15) {
+                        wait(10).done(function () {
+                            $('.text_explanation').text(text_explanation[0]);
+                            taku_block();
+                        });
+                    }
 
                 } else {
                     $(".text_explanation").text("自分の必殺技！！");
@@ -1111,15 +1309,41 @@ class SAVE {
                     });
                     wait(4).done(function () {
 
-                        $('.text_explanation').text("敵の必殺技！！");
+                        if (go_hid == 15) {
+                            $('.text_explanation').text(text_explanation[2]);
+                            my_alterLife(inhp);
+                        } else {
+                            enemy_serect = enemy_text();
+                        }
+
                     });
                     wait(6).done(function () {
-                        enemy_strong(enemy_str, enemy_crl, my_def, my_spd, my_hp);
+                        if (go_hid == 15) {
+                            enemy_serect = enemy_text();
+                        } else {
+                            enemy_turn(enemy_serect);
+                        }
                     });
 
                     wait(8).done(function () {
-                        $('.text_explanation').text(text_explanation[0]);
+                        if (go_hid == 15) {
+                            enemy_turn(enemy_serect);
+                        } else {
+                            $('.text_explanation').text(text_explanation[0]);
+                            taku_block();
+                            if (go_hid == 10) {
+                                $('.text_explanation').text(text_explanation[1]);
+                                taku_none()
+                                my_alterLife(5);
+                            }
+                        }
                     });
+                    if (go_hid == 10 || go_hid == 15) {
+                        wait(10).done(function () {
+                            $('.text_explanation').text(text_explanation[0]);
+                            taku_block();
+                        });
+                    }
 
                 }
                 stro--;
@@ -1127,7 +1351,10 @@ class SAVE {
 
             $('#choose_strong').text("必殺技　　　残り" + stro + "回");
 
-            console.log(stro);
+            if (stro == 0) {
+                $('#strong').css('opacity', '0.2');
+                $('#strong').addClass('none');
+            }
         });
     }
 }

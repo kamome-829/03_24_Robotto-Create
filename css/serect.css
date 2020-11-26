@@ -613,6 +613,8 @@ footer h1{
 
 .hidden_view{
 	margin-top: 30px;
+	text-align: center;
+	display: none;
 }
 
 .hidden_text{
@@ -620,6 +622,16 @@ footer h1{
 	font-size: 30px;
 }
 
+
+.comand{
+	margin-top:100px;
+	margin-left: 12%;
+}
+
+.comand_text{
+	width: 300px;
+	height: 30px;
+}
 
 /*フッターの一番下ロボット選択*/
 

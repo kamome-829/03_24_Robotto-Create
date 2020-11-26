@@ -171,35 +171,17 @@
                     <canvas id="chart_view" class="chart_view"></canvas>
                 </div>
             </div>
-            <div class="hidden_view">
+            <div class="comand">
+                <input class="comand_text" id="comand_text" placeholder="ここにコマンドを打ち込むと・・・"></input>
+                <a class="ch_buttun_radom" id="comand_buttun">OK?</a>
+            </div>
+            <div class="hidden_view" id="hidden_view">
                 <h2>特殊ステータス</h1>
                     <p id="hidden_text" class="hidden_text">" "</p>
             </div>
 
         </div>
-        <div class="footer_down">
-            <div class="robo_save">
 
-            </div>
-            <div class="robo_save">
-
-            </div>
-            <div class="robo_save">
-
-            </div>
-            <div class="robo_save">
-
-            </div>
-            <div class="robo_save">
-
-            </div>
-            <div class="robo_save">
-
-            </div>
-            <div class="robo_save">
-
-            </div>
-        </div>
     </footer>
 
 
@@ -391,12 +373,58 @@
 
             //ここから名前セーブイベント   
 
-            let save = new SAVE();
+            let create = new CREATE();
             //1.Save クリックイベント
-            save.name_save();
-            save.appearance_save();
-            save.status_save();
-            save.reset();
+            create.create_stert()
+            create.name_save();
+            create.appearance_save();
+            create.status_save();
+            create.reset();
+
+            //隠しボタン
+            $('#comand_buttun').on('click', function () {
+
+                var input_message = document.getElementById("comand_text").value;
+                if (input_message == "hidden status open") {
+                    document.getElementById("hidden_view").style.display = "block";
+                } else {
+                    document.getElementById("hidden_view").style.display = "none";
+                }
+
+                if (input_message == "my strongest") {
+                    hp = 100;
+                    str = 100;
+                    def = 100;
+                    spd = 100;
+                    crl = 100;
+
+                    var numb = Math.floor(Math.random() * hidden_sts.length);
+                    var hidden_ram = hidden_sts[numb];
+                    var now_hidden = hidden_ram;
+
+                    var status_obj = {
+                        "str": str,
+                        "def": def,
+                        "hp": hp,
+                        "spd": spd,
+                        "crl": crl,
+                        "variation_str": variation_str,
+                        "variation_def": variation_def,
+                        "variation_hp": variation_hp,
+                        "variation_spd": variation_spd,
+                        "variation_crl": variation_crl,
+                        "total_sp": total_sp,
+                        "hidden": now_hidden,
+                        "hidden_num": numb
+                    }
+
+                    var status_json = JSON.stringify(status_obj);
+                    localStorage.setItem('status_json', status_json);
+                    $('#hidden_text').text(now_hidden);
+                    func_view();
+                    func();
+                }
+            });
         });
     </script>
 </body>

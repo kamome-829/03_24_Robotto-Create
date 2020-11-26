@@ -5,7 +5,7 @@ body{
 }
 
 .title{
-	background-image: url(../img/タイトル背景.png);
+	background-image: url(../img/背景.jpg);
     background-size: cover;
 	background-position: center;
     display: flex;
@@ -16,9 +16,14 @@ body{
 }
 
 h1{
-	font-size: 80px;
-	font-family: 'HG正楷書体-PRO';
-	color: #4332e4;
+	font-size: 100px;
+	font-family: 'HGS創英角ﾎﾟｯﾌﾟ体';
+	color: #41f714;
+}
+
+h2{
+	font-size: 30px;
+	color: rgb(243, 187, 113);
 }
 
 .button{

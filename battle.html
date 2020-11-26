@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <main class="main">
+    <main class="main" id="main">
 
         <div class="hp_gage">
 
@@ -26,20 +26,20 @@
             </div>
 
             <div class="enemy_hp">
-                <h2 class="enemy_name">ゴースト</h2>
+                <h2 class="enemy_name"></h2>
                 <div id="enemy_life-frame">
                     <div id="enemy_life-bar"></div>
                     <div id="enemy_life-mark"></div>
                 </div>
 
                 <div class="enemy_img">
-                    <img src="img/敵_1.png" height="100%">
+                    <img height="100%" id="enemy_img_now">
                 </div>
             </div>
 
         </div>
 
-        <div class="down">
+        <div class="down" id="down">
             <div class="choose">
                 <div id="attack" class="attack">
                     <p class="choose_text">攻撃</p>
@@ -62,7 +62,11 @@
                 </p>
             </div>
         </div>
-        <div class="button">
+        <div class="winorlose_text" id="winorlose_text">
+            <h1 class="winorlose">aaa</h1>
+        </div>
+        <div class="button" id="button">
+            <a href="battle.html" class="new_button">もう一回</a>
             <a href="index.html" class="new_button">タイトルへ</a>
         </div>
     </main>
@@ -75,11 +79,11 @@
     <script>
         $(function () {
 
-            let save = new SAVE();
+            let create = new CREATE();
             //let game = new GAME();
 
-            save.game_sturt();
-            save.choose();
+            create.game_sturt();
+            create.choose();
 
         });
     </script>
